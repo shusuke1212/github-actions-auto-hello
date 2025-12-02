@@ -1,0 +1,25 @@
+name: Auto Hello
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # 毎時0分（UTC）に自動実行
+  workflow_dispatch: {}   # 手動実行もできるようにしておく
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update hello.txt
+        run: |
+          echo "Hello! 現在のUTC時刻: $(date -u)" > hello.txt
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add hello.txt
+          git commit -m "Update hello.txt" || echo "No changes"
+          git push
